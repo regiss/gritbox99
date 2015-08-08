@@ -1,0 +1,61 @@
+#
+# WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+# http://nette.org/security-warning
+#
+parameters:
+	appUniqueHash: "jHrC5j8V3HDTDx86+#&H109" # Change this hash for your app, 22 chars at least!
+
+	emails:
+		templatesDir: %appDir%/templates/emails
+		fromAddress: 'weListen@myApp.com'
+		archiveAddress: ''
+
+php:
+	date.timezone: Europe/Prague
+
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+
+session:
+	expiration: 14 days
+
+nette:
+	debugger:
+		bar:
+			- JanDrabek\MailPanel\MailPanel
+
+services:
+	nette.mailer: JanDrabek\MailPanel\SessionMailer
+
+	- App\Model\Managers\UserManager
+
+	- App\Model\Repositories\UserRepository
+	- App\Model\Repositories\PasswordResetRepository
+
+	- App\Forms\ISignUpFormFactory
+	- App\Forms\ISendPasswordFormFactory
+
+	- App\Components\HtmlAssets(%developmentMode%, %assetVersion%)
+
+	- App\Services\EmailService(%emails.templatesDir%, %emails.archiveAddress%, %emails.fromAddress%)
+
+	router: App\RouterFactory::createRouter
+
+	authorizator:
+		class: Nette\Security\Permission
+		setup:
+			- addRole('guest')
+			- addRole('user')
+			- addRole('admin')
+			- addResource('Admin')
+			- addResource('Admin:Homepage', 'Admin')
+			- addResource('Front')
+			- addResource('Front:Sign', 'Front')
+			- addResource('Front:Homepage', 'Front')
+			- allow('guest', 'Front')
+			- allow('user')
+			- allow('admin')

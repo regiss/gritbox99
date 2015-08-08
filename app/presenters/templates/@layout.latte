@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>{ifset title}{include title|striptags} | {/ifset}Nette Sandbox</title>
+
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	{control htmlAssets, 'css'}
+
+	{block head}{/block}
+</head>
+
+<body>
+
+	{block header}{/block}
+
+	<div class="container">
+
+		<div class="topfix" data-topfix-offset="20">
+			<div n:foreach="$flashes as $flash" class="alert alert-{$flash->type}">{$flash->message}</div>
+		</div>
+
+		{include moduleLayout}
+	</div>
+
+
+	{control htmlAssets, 'js'}
+
+	{block scripts}
+
+	{/block}
+</body>
+</html>
